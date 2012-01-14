@@ -14,6 +14,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "roomba.h"
+
 struct roomba_cmd {
 	size_t len;
 	unsigned char type;
@@ -85,7 +87,7 @@ set_schedule(char *schedule)
 	unsigned char daymask = 0;
 	struct roomba_cmd *cmd;
 
-	cmd = command_new(167, 15);
+	cmd = command_new(ROOMBA_SCHEDULE, 15);
 
 	for (p = schedule;  ; p = NULL) {
 		if ((p = strtok(p, ", ")) == NULL)
@@ -141,7 +143,7 @@ main(int argc, char **argv)
 		time(&now);
 		tm = localtime(&now);
 		printf("set time: day %d %02d:%02d\n", tm->tm_wday, tm->tm_hour, tm->tm_min);
-		prg_time = command_new(168, 3);
+		prg_time = command_new(ROOMBA_SETTIME, 3);
 		prg_time->data[0] = tm->tm_wday;
 		prg_time->data[1] = tm->tm_hour;
 		prg_time->data[2] = tm->tm_min;
