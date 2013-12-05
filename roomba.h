@@ -4,6 +4,7 @@
  */
 
 /* Initialisation commands */
+#define ROOMBA_RESET	7	/* undocumented */
 #define ROOMBA_START	128
 #define ROOMBA_BAUD	129
 
@@ -22,4 +23,9 @@
 #define ROOMBA_SCHEDULE	167
 #define ROOMBA_SETTIME	168
 
-
+/* Binary LEDs */
+#define ROOMBA_LED	139
+#define ROOMBA_LED_DEBRIS	0x1
+#define ROOMBA_LED_SPOT		0x2
+#define ROOMBA_LED_DOCK		0x4
+#define ROOMBA_LED_CHECK	0x8
