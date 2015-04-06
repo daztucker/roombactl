@@ -75,7 +75,8 @@ command_free(struct roomba_cmd *cmd)
 static void
 command_send(int fd, struct roomba_cmd *cmd)
 {
-	size_t i;
+	int res;
+	size_t i, pos = 0;
 
 	/* send a start command if needed */
 	if (roomba_needs_start && cmd->type != ROOMBA_START &&
@@ -93,7 +94,18 @@ command_send(int fd, struct roomba_cmd *cmd)
 	for (i = 0; i < cmd->len; i++)
 		printf(" %d", cmd->data[i]);
 	printf("\n");
-	write(fd, cmd->data, cmd->len);
+	while (cmd->len > pos) {
+		res = write(fd, cmd->data + pos, cmd->len - pos);
+		switch (res) {
+		case -1:
+			if (errno == EINTR || errno == EAGAIN)
+				continue;
+			perror("write");
+			exit(1);
+		default:
+			pos += (size_t)res;
+		}
+	}
 }
 
 static void
