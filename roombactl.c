@@ -23,12 +23,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <termios.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "roomba.h"
 
@@ -121,12 +124,21 @@ static int
 open_device(char *devicename)
 {
 	static int fd = -1;
+	struct termios tio;
 
 	if (fd != -1)
 		close(fd);
 	printf("open %s\n", devicename);
 	if ((fd = open(devicename,  O_RDWR)) == -1)
 		perror("open");
+
+	/* speed to 115200 */
+	tcgetattr(fd, &tio);
+	tio.c_cflag |= (CLOCAL | CREAD);
+	cfsetispeed(&tio, B115200);
+	cfsetospeed(&tio, B115200);
+	tcsetattr(fd, TCSANOW, &tio);
+
 	return fd;
 }
 
