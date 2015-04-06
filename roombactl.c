@@ -168,7 +168,7 @@ set_schedule(int fd, char *schedule)
 	for (p = schedule;  ; p = NULL) {
 		if ((p = strtok(p, ", ")) == NULL)
 			break;
-		if ((i = sscanf(p, "%3s:%d:%d", &dayname, &hour, &minute)) != 3) {
+		if ((i = sscanf(p, "%3s:%d:%d", dayname, &hour, &minute)) != 3) {
 			printf("day %s\n", dayname);
 			fprintf(stderr, "incomplete schedule spec '%s' found %d\n", p, i);
 			exit(1);
