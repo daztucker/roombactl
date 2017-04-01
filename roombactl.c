@@ -36,6 +36,7 @@
 #include "roomba.h"
 
 static int roomba_needs_start = 1;
+static int verbose = 0;
 
 struct roomba_cmd {
 	size_t len;
@@ -93,10 +94,12 @@ command_send(int fd, struct roomba_cmd *cmd)
 		exit(1);
 	}
 
-	printf("command %d", cmd->type);
-	for (i = 0; i < cmd->len; i++)
-		printf(" %d", cmd->data[i]);
-	printf("\n");
+	if (verbose) {
+		printf("command %d", cmd->type);
+		for (i = 0; i < cmd->len; i++)
+			printf(" %d", cmd->data[i]);
+		printf("\n");
+	}
 	write(fd, &cmd->type, 1);
 	while (cmd->len > pos) {
 		res = write(fd, cmd->data + pos, cmd->len - pos);
@@ -267,7 +270,7 @@ main(int argc, char **argv)
 		fd = open_device(devicename);
 	}
 
-	while ((opt = getopt(argc, argv, "cd:l:prs:t")) != -1) {
+	while ((opt = getopt(argc, argv, "cd:l:prs:tv")) != -1) {
 		switch (opt) {
 		case 'c':
 			command_send_simple(fd, ROOMBA_CLEAN);
@@ -291,6 +294,9 @@ main(int argc, char **argv)
 			break;
 		case 't':
 			set_time(fd);
+			break;
+		case 'v':
+			verbose++;
 			break;
 		}
 	}
