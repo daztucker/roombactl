@@ -125,8 +125,10 @@ static int
 open_device(char *devicename)
 {
 	static int fd = -1;
-	struct termios tio;
 	char cmd[1024];
+#if 0
+	struct termios tio;
+#endif
 
 	snprintf(cmd, sizeof cmd,
 	    "stty raw clocal speed 115200 <%s >/dev/null", devicename);
@@ -206,8 +208,7 @@ set_schedule(int fd, char *schedule)
 void
 set_led(int fd, char *spec)
 {
-	char *p, name[1024];
-	int i, value;
+	char *p;
 	struct roomba_cmd *cmd = command_new(ROOMBA_LED, 3);
 
 	printf("leds:");
@@ -224,7 +225,7 @@ set_led(int fd, char *spec)
 		} else if (strcmp(p, "check") == 0) {
 			cmd->data[0] |= ROOMBA_LED_CHECK;
 		} else {
-			fprintf(stderr, "unknown LED '%s'\n", name);
+			fprintf(stderr, "unknown LED '%s'\n", p);
 			exit(1);
 		}
 	}
@@ -252,9 +253,8 @@ set_time(int fd)
 int
 main(int argc, char **argv)
 {
-	int opt, fd = -1, do_clean, do_reset;
+	int opt, fd = -1;
 	char *devicename = NULL;
-	struct roomba_cmd *prg_sched = NULL;
 
 	if ((devicename = getenv("ROOMBA_DEVICE")) != NULL) {
 		fd = open_device(devicename);
