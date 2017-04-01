@@ -35,7 +35,7 @@
 
 #include "roomba.h"
 
-static roomba_needs_start = 1;
+static int roomba_needs_start = 1;
 
 struct roomba_cmd {
 	size_t len;
@@ -97,6 +97,7 @@ command_send(int fd, struct roomba_cmd *cmd)
 	for (i = 0; i < cmd->len; i++)
 		printf(" %d", cmd->data[i]);
 	printf("\n");
+	write(fd, &cmd->type, 1);
 	while (cmd->len > pos) {
 		res = write(fd, cmd->data + pos, cmd->len - pos);
 		switch (res) {
@@ -125,19 +126,30 @@ open_device(char *devicename)
 {
 	static int fd = -1;
 	struct termios tio;
+	char cmd[1024];
+
+	snprintf(cmd, sizeof cmd,
+	    "stty raw clocal speed 115200 <%s >/dev/null", devicename);
+	if (system(cmd) != 0) {
+		perror("system");
+		exit(1);
+	}
 
 	if (fd != -1)
 		close(fd);
 	printf("open %s\n", devicename);
 	if ((fd = open(devicename,  O_RDWR)) == -1)
 		perror("open");
+	tcflush(fd, TCIOFLUSH);
 
+#if 0
 	/* speed to 115200 */
 	tcgetattr(fd, &tio);
-	tio.c_cflag |= (CLOCAL | CREAD);
+	tio.c_cflag = (CLOCAL | CREAD);
 	cfsetispeed(&tio, B115200);
 	cfsetospeed(&tio, B115200);
 	tcsetattr(fd, TCSANOW, &tio);
+#endif
 
 	return fd;
 }
@@ -276,4 +288,5 @@ main(int argc, char **argv)
 		}
 	}
 	close(fd);
+	exit(0);
 }
