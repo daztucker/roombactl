@@ -215,6 +215,7 @@ set_led(int fd, char *spec)
 {
 	char *p;
 	struct roomba_cmd *cmd = command_new(ROOMBA_LED, 3);
+	int colour, intensity;
 
 	printf("leds:");
 	for (p = spec;  ; p = NULL) {
@@ -229,6 +230,20 @@ set_led(int fd, char *spec)
 			cmd->data[0] |= ROOMBA_LED_DOCK;
 		} else if (strcmp(p, "check") == 0) {
 			cmd->data[0] |= ROOMBA_LED_CHECK;
+		} else if (sscanf(p, "colour:%d", &colour) == 1) {
+			if (colour < 0 || colour > 255) {
+				errno = ERANGE;
+				perror("colour");
+				exit(1);
+			}
+			cmd->data[1] = colour;
+		} else if (sscanf(p, "intensity:%d", &intensity) == 1) {
+			if (intensity < 0 || intensity > 255) {
+				errno = ERANGE;
+				perror("intensity");
+				exit(1);
+			}
+			cmd->data[2] = intensity;
 		} else {
 			fprintf(stderr, "unknown LED '%s'\n", p);
 			exit(1);
