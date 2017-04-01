@@ -230,7 +230,8 @@ set_led(int fd, char *spec)
 			cmd->data[0] |= ROOMBA_LED_DOCK;
 		} else if (strcmp(p, "check") == 0) {
 			cmd->data[0] |= ROOMBA_LED_CHECK;
-		} else if (sscanf(p, "colour:%d", &colour) == 1) {
+		} else if (sscanf(p, "colour:%d", &colour) == 1 ||
+			    sscanf(p, "color:%d", &colour) == 1) {
 			if (colour < 0 || colour > 255) {
 				errno = ERANGE;
 				perror("colour");
