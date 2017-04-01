@@ -25,6 +25,7 @@
 #define ROOMBA_BAUD	129
 
 /* Mode commands */
+#define ROOMBA_CONTROL	130	/* deprecated? */
 #define ROOMBA_SAFE	131
 #define ROOMBA_FULL	132
 #define ROOMBA_POWER	133
