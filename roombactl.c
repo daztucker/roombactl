@@ -126,9 +126,6 @@ open_device(char *devicename)
 {
 	static int fd = -1;
 	char cmd[1024];
-#if 0
-	struct termios tio;
-#endif
 
 	snprintf(cmd, sizeof cmd,
 	    "stty raw clocal speed 115200 <%s >/dev/null", devicename);
@@ -145,12 +142,16 @@ open_device(char *devicename)
 	tcflush(fd, TCIOFLUSH);
 
 #if 0
-	/* speed to 115200 */
-	tcgetattr(fd, &tio);
-	tio.c_cflag = (CLOCAL | CREAD);
-	cfsetispeed(&tio, B115200);
-	cfsetospeed(&tio, B115200);
-	tcsetattr(fd, TCSANOW, &tio);
+	{
+		struct termios tio;
+
+		/* speed to 115200 */
+		tcgetattr(fd, &tio);
+		tio.c_cflag = (CLOCAL | CREAD);
+		cfsetispeed(&tio, B115200);
+		cfsetospeed(&tio, B115200);
+		tcsetattr(fd, TCSANOW, &tio);
+	}
 #endif
 
 	return fd;
@@ -184,7 +185,8 @@ set_schedule(int fd, char *schedule)
 			break;
 		if ((i = sscanf(p, "%3s:%d:%d", dayname, &hour, &minute)) != 3) {
 			printf("day %s\n", dayname);
-			fprintf(stderr, "incomplete schedule spec '%s' found %d\n", p, i);
+			fprintf(stderr,
+			    "incomplete schedule spec '%s' found %d\n", p, i);
 			exit(1);
 		}
 		if ((day = lookup_day(dayname)) == -1) {
@@ -243,7 +245,8 @@ set_time(int fd)
 
 	time(&now);
 	tm = localtime(&now);
-	printf("set time: day %d %02d:%02d\n", tm->tm_wday, tm->tm_hour, tm->tm_min);
+	printf("set time: day %d %02d:%02d\n", tm->tm_wday, tm->tm_hour,
+	    tm->tm_min);
 	cmd->data[0] = tm->tm_wday;
 	cmd->data[1] = tm->tm_hour;
 	cmd->data[2] = tm->tm_min;
