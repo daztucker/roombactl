@@ -280,7 +280,7 @@ static void
 usage(void)
 {
 	fprintf(stderr,
-	    "usage: roombactl [-cprtv] -d device [-l led] [-s schedule]\n\n"
+	    "usage: roombactl -d device [-cprtv] [-l led] [-s schedule]\n\n"
 	    "\t-c (clean) -p (poweroff) -r (reset) -t (set time) "
 		"-v (verbose)\n"
 	    "\t-d /dev/ttyUSB0\n"
