@@ -80,12 +80,14 @@ static void
 command_send(int fd, struct roomba_cmd *cmd)
 {
 	int res;
-	size_t i, pos = 0;
+	size_t i, pos = 0, len = cmd->len + 1;;
+	unsigned char *buf = malloc(len);
 
 	/* send a start command if needed */
 	if (roomba_needs_start && cmd->type != ROOMBA_START &&
 	   cmd->type != ROOMBA_RESET) {
 		command_send_simple(fd, ROOMBA_START);
+		usleep(100000);
 		roomba_needs_start = 0;
 	}
 
@@ -100,9 +102,10 @@ command_send(int fd, struct roomba_cmd *cmd)
 			printf(" %d", cmd->data[i]);
 		printf("\n");
 	}
-	write(fd, &cmd->type, 1);
-	while (cmd->len > pos) {
-		res = write(fd, cmd->data + pos, cmd->len - pos);
+	buf[0] = cmd->type;
+	memcpy(buf + 1, cmd->data, cmd->len);
+	while (len > pos) {
+		res = write(fd, buf + pos, len - pos);
 		switch (res) {
 		case -1:
 			if (errno == EINTR || errno == EAGAIN)
@@ -113,6 +116,7 @@ command_send(int fd, struct roomba_cmd *cmd)
 			pos += (size_t)res;
 		}
 	}
+	free(buf);
 }
 
 static void
