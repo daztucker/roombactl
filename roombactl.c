@@ -276,6 +276,18 @@ set_time(int fd)
 	command_send(fd, cmd);
 }
 
+static void
+usage(void)
+{
+	fprintf(stderr,
+	    "usage: roombactl [-cprtv] [-d device] [-l led] [-s sched]\n"
+	    "\t-d /dev/ttyUSB0\n"
+	    "\t-l [check,dock,spot,debris,colour:[0-255],intensity:[0-255]]\n"
+	    "\t-s [day:HH:MM[,day:HH:MM]...]\n"
+	 );
+	exit(1);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -286,7 +298,10 @@ main(int argc, char **argv)
 		fd = open_device(devicename);
 	}
 
-	while ((opt = getopt(argc, argv, "cd:l:prs:tv")) != -1) {
+	if (argc == 1)
+		usage();
+
+	while ((opt = getopt(argc, argv, "cd:l:prs:tv?")) != -1) {
 		switch (opt) {
 		case 'c':
 			command_send_simple(fd, ROOMBA_CLEAN);
@@ -313,6 +328,9 @@ main(int argc, char **argv)
 			break;
 		case 'v':
 			verbose++;
+			break;
+		default:
+			usage();
 			break;
 		}
 	}
