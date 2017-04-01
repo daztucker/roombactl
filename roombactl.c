@@ -232,6 +232,10 @@ set_led(int fd, char *spec)
 		}
 	}
 	printf("\n");
+	/* LEDs can only be controlled in Safe or Full mode */
+	command_send_simple(fd, ROOMBA_FULL);
+	usleep(100000);
+	/* Now send LED command */
 	command_send(fd, cmd);
 	command_free(cmd);
 }
