@@ -300,14 +300,14 @@ main(int argc, char **argv)
 	int opt, fd = -1;
 	char *devicename = NULL;
 
+	if (argc == 1)
+		usage();
+
 	if ((devicename = getenv("ROOMBA_DEVICE")) != NULL) {
 		fd = open_device(devicename);
 	}
 
-	if (argc == 1)
-		usage();
-
-	while ((opt = getopt(argc, argv, "cd:l:prs:tv?")) != -1) {
+	while ((opt = getopt(argc, argv, "cd:l:prs:tv")) != -1) {
 		switch (opt) {
 		case 'c':
 			command_send_simple(fd, ROOMBA_CLEAN);
