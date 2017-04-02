@@ -285,9 +285,9 @@ usage(void)
 {
 	fprintf(stderr,
 	    "usage: roombactl -d device [-cprtv] [-l led] [-s schedule]\n\n"
+	    "\t-d /dev/ttyUSB0\n"
 	    "\t-c (clean) -p (poweroff) -r (reset) -t (set time) "
 		"-v (verbose)\n"
-	    "\t-d /dev/ttyUSB0\n"
 	    "\t-l [check,dock,spot,debris,colour:[0-255],intensity:[0-255]]\n"
 	    "\t-s [day:HH:MM[,day:HH:MM]...]\n\n"
 	 );
