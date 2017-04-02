@@ -50,8 +50,8 @@ Initiate immediate clean.
 I bought Roomba 530 devices knowing they had scheduling hardware but not
 having an interface to enable it.  I looked at the existing software,
 which seemed quite featureful, but the instructions started with "Install
-this Java SDK", but that seemed a little heavyweight for a handful of
-specific bytes to a serial port.
+this Java SDK", but that seemed a little heavyweight for sending a handful
+of specific bytes to a serial port.
 
 ## References
 
