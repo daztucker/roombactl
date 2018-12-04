@@ -17,7 +17,7 @@ Sends commands to a Roomba device using the Open Interface specification.
 
 -d Specify the device used for serial communications.  Must be specified before
    other options.  If -d is not specified, the ROOMBA_DEVICE environment
-   variable is checked.
+   variable will be used if present.
 
 -l Set LED state.  The tokens 'check', 'dock', 'spot' and 'debris' will light
    the corresponding LED.  The tokens 'colour:N' and 'intensity:M' will set
@@ -48,9 +48,9 @@ Initiate immediate clean.
 ## History
 
 I bought Roomba 530 devices knowing they had scheduling hardware but not
-having an interface to enable it.  I looked at the existing software,
+having an interface to enable it.  I looked at the existing software
 which seemed quite featureful, but the instructions started with "Install
-this Java SDK", but that seemed a little heavyweight for sending a handful
+this Java SDK" which seemed a little heavyweight for sending a handful
 of specific bytes to a serial port.
 
 ## References
